@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenses Revision Test</title>
+<meta name="description" content="Entraînement interactif aux temps anglais : present, past, perfect, futur — avec correction et explications.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱</text></svg>">
+<style>
+  :root {
+    --bg: #f6f5f1; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6a65; --line: #e2e0d8;
+    --accent: #2f5bd3; --ok: #1f8a4c; --ok-bg: #e6f4ec; --ko: #c0392b; --ko-bg: #fbeae8;
+    --hint: #8a6d1f; --input: #fbfaf7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151514; --card: #1f1f1d; --ink: #ecebe6; --muted: #9c9b95; --line: #34332f;
+      --accent: #7c9cff; --ok: #4cc283; --ok-bg: #173425; --ko: #ff7b6b; --ko-bg: #3a1d19;
+      --hint: #d9b45a; --input: #262624;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .bar { max-width: 860px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .bar h1 { font-size: 18px; margin: 0; flex: 1 1 auto; }
+  .score { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .score small { color: var(--muted); font-weight: 400; }
+  nav { max-width: 860px; margin: 0 auto; padding: 0 16px 10px; display: flex; gap: 6px; overflow-x: auto; }
+  nav a { flex: none; text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: var(--card);
+    border-radius: 999px; padding: 2px 12px; font-size: 14px; }
+  nav a.done { border-color: var(--ok); color: var(--ok); }
+  main { max-width: 860px; margin: 0 auto; padding: 8px 16px 80px; }
+  section { margin-top: 32px; scroll-margin-top: 110px; }
+  section h2 { font-size: 22px; margin: 0 0 4px; }
+  section h2 span { color: var(--accent); margin-right: 8px; }
+  .instr { color: var(--muted); margin: 0 0 8px; font-style: italic; }
+  .example { font-size: 15px; color: var(--muted); border-left: 3px solid var(--line); padding: 2px 12px; margin-bottom: 14px; }
+  .item { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .item.ok { border-color: var(--ok); }
+  .item.ko { border-color: var(--ko); }
+  .num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+  .text p { margin: 0 0 4px; }
+  .blank { display: inline-flex; align-items: baseline; gap: 4px; flex-wrap: wrap; }
+  .blank input, .blank select { font: inherit; font-size: 16px; color: var(--ink); background: var(--input);
+    border: 1px solid var(--line); border-bottom: 2px solid var(--accent); border-radius: 6px; padding: 1px 8px; min-width: 9ch; max-width: 100%; }
+  .blank input:focus, .blank select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .blank input.ok, .blank select.ok { border-color: var(--ok); background: var(--ok-bg); }
+  .blank input.ko, .blank select.ko { border-color: var(--ko); background: var(--ko-bg); text-decoration: line-through; }
+  .h { color: var(--hint); font-size: 15px; }
+  .tag { font-size: 12px; font-weight: 700; color: var(--muted); margin-right: 2px; }
+  .actions { margin-top: 10px; display: flex; gap: 8px; }
+  button { font: inherit; font-size: 15px; border-radius: 8px; padding: 6px 14px; cursor: pointer;
+    border: 1px solid var(--accent); background: var(--accent); color: #fff; }
+  button.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .fb { margin-top: 10px; display: none; }
+  .fb.show { display: block; }
+  .fb div { padding: 8px 12px; border-radius: 8px; margin-top: 6px; font-size: 15px; }
+  .fb .good { background: var(--ok-bg); }
+  .fb .bad { background: var(--ko-bg); }
+  .fb b.r { color: var(--ok); }
+  .fb .bad b.r { color: var(--ink); }
+  .fb .why { display: block; color: var(--muted); margin-top: 2px; }
+  .recap table { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--card); }
+  .recap th, .recap td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  .recap .wrap { overflow-x: auto; }
+  .recap ul { padding-left: 20px; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>Tenses Revision Test</h1>
+    <div class="score" id="score">0 / 0</div>
+    <button class="ghost" id="reset">Tout recommencer</button>
+  </div>
+  <nav id="nav"></nav>
+</header>
+<main id="main">
+  <p class="instr">Écris la forme verbale (avec le sujet quand il est entre parenthèses, ex. <i>I / think</i> → <b>I think</b>). Les contractions sont acceptées (<i>I'm</i> = <i>I am</i>). Appuie sur <kbd>Entrée</kbd> ou « Vérifier ».</p>
+</main>
+<footer>D'après la fiche « Tenses Revision Test » (corrigé). Ta progression est gardée dans ce navigateur.</footer>
+
+<script src="data.js"></script>
+<script>
+(() => {
+  const STORE = "tenses-quiz-v1";
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { state = {}; }
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
+
+  // --- Normalisation des réponses (contractions, ponctuation, casse) ---
+  const RULES = [
+    [/\bwon't\b/g, ["will not"]], [/\bcan't\b/g, ["can not"]], [/\bcannot\b/g, ["can not"]],
+    [/n't\b/g, [" not"]], [/'m\b/g, [" am"]], [/'re\b/g, [" are"]], [/'ve\b/g, [" have"]],
+    [/'ll\b/g, [" will"]], [/'s\b/g, [" is", " has"]], [/'d\b/g, [" had", " would"]],
+  ];
+  function variants(s, expected) {
+    s = s.toLowerCase().replace(/[’‘`´]/g, "'").replace(/[.!?,;:"«»()~]+/g, " ").replace(/\s+/g, " ").trim();
+    // Côté corrigé, on lève l'ambiguïté : 's + -ing = is, sinon has ; 'd = had
+    if (expected) s = s.replace(/'s (\S+)/g, (m, w) => (/ing$/.test(w) ? " is " : " has ") + w).replace(/'d\b/g, " had");
+    let out = [s];
+    for (const [re, reps] of RULES) {
+      out = out.flatMap(x => { re.lastIndex = 0; return re.test(x) ? reps.map(r => x.replace(re, r)) : [x]; });
+    }
+    return new Set(out.map(x => x.replace(/\s+/g, " ").trim()));
+  }
+  const OK_WORDS = new Set(["ok", "okay", "correct", "✓", "✔", "v", "c"]);
+
+  function isCorrect(blank, given, mode) {
+    if (!given.trim()) return false;
+    if (mode === "choice") return blank.a.includes(given);
+    const g = variants(given);
+    if (blank.a[0] === "ok") return [...g].some(x => OK_WORDS.has(x));
+    const subj = (blank.h || "").split("/")[0].trim().toLowerCase();
+    for (const ans of blank.a) {
+      for (const e of variants(ans, true)) {
+        if (g.has(e)) return true;
+        // Tolère l'oubli du sujet donné entre parenthèses (ex. « am thinking » pour I / think)
+        const words = e.split(" ");
+        if (subj && blank.h.includes("/") && words[0] === subj && words.length > 1 && g.has(words.slice(1).join(" "))) return true;
+      }
+    }
+    return false;
+  }
+
+  // --- Rendu ---
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const main = document.getElementById("main"), nav = document.getElementById("nav");
+  let total = 0;
+  const registry = [];
+
+  function lineHTML(line, item, key, mode) {
+    let html = esc(line.trim()).replace(/^(A|B):/, '<span class="tag">$1:</span>');
+    return html.replace(/\[\[(\d+)\]\]/g, (_, n) => {
+      const b = item.b[+n], id = `${key}-${n}`;
+      if (mode === "choice") {
+        const opts = b.o.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("");
+        return `<span class="blank"><select id="${id}" aria-label="Réponse ${+n + 1}"><option value="">— choisir —</option>${opts}</select></span>`;
+      }
+      const w = Math.max(9, Math.min(26, (b.a[0].length + 3)));
+      return `<span class="blank"><input id="${id}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:${w}ch" aria-label="Réponse ${+n + 1}">` +
+        (b.h ? `<span class="h">(${esc(b.h)})</span>` : "") + `</span>`;
+    });
+  }
+
+  EXERCISES.forEach(ex => {
+    const sec = document.createElement("section");
+    sec.id = "ex-" + ex.id;
+    sec.innerHTML = `<h2><span>${ex.id}</span>${esc(ex.title)}</h2><p class="instr">${esc(ex.instr)}</p>` +
+      (ex.example ? `<div class="example">Exemple : ${ex.example.split("|").join("<br>")}</div>` : "");
+    nav.insertAdjacentHTML("beforeend", `<a href="#ex-${ex.id}" data-ex="${ex.id}">${ex.id}</a>`);
+
+    ex.items.forEach((item, i) => {
+      const key = `${ex.id}-${i}`;
+      total += item.b.length;
+      const div = document.createElement("div");
+      div.className = "item";
+      const lines = item.t.split("|").map((l, j) => `<p>${j === 0 ? `<span class="num">${i + 1}.</span>` : ""}${lineHTML(l, item, key, ex.mode)}</p>`).join("");
+      div.innerHTML = `<div class="text">${lines}</div>
+        <div class="actions"><button class="check">Vérifier</button><button class="ghost retry" hidden>Réessayer</button></div>
+        <div class="fb"></div>`;
+      sec.appendChild(div);
+
+      const fields = item.b.map((_, n) => div.querySelector(`#${CSS.escape(key + "-" + n)}`));
+      const fb = div.querySelector(".fb"), btn = div.querySelector(".check"), retry = div.querySelector(".retry");
+      const entry = { ex: ex.id, key, n: item.b.length, good: 0, checked: false };
+      registry.push(entry);
+
+      function check(store = true) {
+        let good = 0, html = "";
+        item.b.forEach((b, n) => {
+          const f = fields[n], val = f.value, ok = isCorrect(b, val, ex.mode);
+          f.classList.toggle("ok", ok); f.classList.toggle("ko", !ok); f.disabled = true;
+          if (ok) good++;
+          const label = item.b.length > 1 ? `(${n + 1}) ` : "";
+          html += ok
+            ? `<div class="good">✔ ${label}<b class="r">${esc(val.trim())}</b> — bonne réponse.<span class="why">${esc(b.w)}</span></div>`
+            : `<div class="bad">✘ ${label}${val.trim() ? `Tu as écrit « ${esc(val.trim())} ». ` : ""}Bonne réponse : <b class="r">${esc(b.a[0])}</b>` +
+              (b.a.length > 1 && b.a[0] !== "ok" ? ` <small>(accepté aussi : ${b.a.slice(1).map(esc).join(", ")})</small>` : "") +
+              `<span class="why">Pourquoi : ${esc(b.w)}</span></div>`;
+        });
+        fb.innerHTML = html; fb.classList.add("show");
+        div.classList.toggle("ok", good === item.b.length); div.classList.toggle("ko", good !== item.b.length);
+        btn.hidden = true; retry.hidden = false;
+        entry.good = good; entry.checked = true;
+        if (store) { state[key] = fields.map(f => f.value); save(); }
+        updateScore();
+      }
+      function reset(store = true) {
+        fields.forEach(f => { f.value = ""; f.disabled = false; f.classList.remove("ok", "ko"); });
+        fb.classList.remove("show"); fb.innerHTML = ""; div.classList.remove("ok", "ko");
+        btn.hidden = false; retry.hidden = true; entry.good = 0; entry.checked = false;
+        if (store) { delete state[key]; save(); updateScore(); }
+      }
+      entry.reset = reset;
+      btn.addEventListener("click", () => check());
+      retry.addEventListener("click", () => { reset(); fields[0].focus(); });
+      fields.forEach((f, n) => f.addEventListener("keydown", e => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        if (n < fields.length - 1 && !fields[n + 1].value) fields[n + 1].focus();
+        else { check(); const next = registry[registry.indexOf(entry) + 1]; if (next) { const nf = document.getElementById(next.key + "-0"); nf && nf.focus({ preventScroll: false }); } }
+      }));
+
+      if (Array.isArray(state[key])) { state[key].forEach((v, n) => { if (fields[n]) fields[n].value = v; }); check(false); }
+    });
+    main.appendChild(sec);
+  });
+
+  // --- Fiche récap ---
+  main.insertAdjacentHTML("beforeend", `
+  <section id="ex-recap" class="recap">
+    <h2><span>★</span>Fiche récap : quel temps choisir ?</h2>
+    <div class="wrap"><table>
+      <tr><th>Temps</th><th>Forme</th><th>Quand / mots-clés</th></tr>
+      <tr><td>Present simple</td><td>base (+s)</td><td>Habitudes, faits, verbes d'état (think, know, like, need, want, hate, understand, belong). <i>always, usually, every day</i></td></tr>
+      <tr><td>Present continuous</td><td>am/is/are + -ing</td><td>En ce moment, temporaire, arrangement futur. <i>now, at the moment, Look!, this week</i></td></tr>
+      <tr><td>Past simple</td><td>verbe au passé</td><td>Action finie, moment précis. <i>yesterday, ago, last…, in 1993, what time…?</i></td></tr>
+      <tr><td>Past continuous</td><td>was/were + -ing</td><td>Action en cours dans le passé, souvent interrompue par un past simple. <i>when, while, on the way</i></td></tr>
+      <tr><td>Present perfect</td><td>have/has + p.p.</td><td>Résultat présent, expérience, période non finie. <i>ever, never, already, yet, just, so far, today, this week</i></td></tr>
+      <tr><td>Present perfect continuous</td><td>have/has been + -ing</td><td>Durée jusqu'à maintenant. <i>for, since, how long, all day</i></td></tr>
+      <tr><td>Past perfect</td><td>had + p.p.</td><td>Antérieur à une autre action passée. <i>before, by the time, already</i></td></tr>
+      <tr><td>Past perfect continuous</td><td>had been + -ing</td><td>Durée avant un moment passé. <i>for ages when…, she had been crying</i></td></tr>
+      <tr><td>Will / be going to</td><td>will + base / am-is-are going to + base</td><td>Will : prédiction, offre spontanée. Going to : plan déjà décidé, indice visible.</td></tr>
+      <tr><td>Present simple (futur)</td><td>base (+s)</td><td>Horaires et programmes : <i>My train leaves…, It starts at 7.30</i>. Après when/if : present simple.</td></tr>
+      <tr><td>Be about to</td><td>am/is/are about to + base</td><td>Futur imminent : <i>it's about to open</i></td></tr>
+    </table></div>
+    <h3>Pièges à retenir</h3>
+    <ul>
+      <li><i>ago / yesterday / last… / heure précise</i> → past simple, jamais present perfect.</li>
+      <li>Verbes d'état → pas de -ing (sauf sens d'action : <i>I'm thinking of, I'm having breakfast</i>).</li>
+      <li>Après <i>when, if, as soon as, before</i> → present simple (ou present perfect) pour le futur.</li>
+      <li><i>always</i> + continuous = répétition qui agace.</li>
+      <li><i>for</i> + durée, <i>since</i> + point de départ.</li>
+    </ul>
+  </section>`);
+  nav.insertAdjacentHTML("beforeend", `<a href="#ex-recap">Récap</a>`);
+
+  function updateScore() {
+    const good = registry.reduce((s, e) => s + e.good, 0);
+    const done = registry.reduce((s, e) => s + (e.checked ? e.n : 0), 0);
+    document.getElementById("score").innerHTML = `${good} / ${done} <small>· ${done}/${total} faits</small>`;
+    EXERCISES.forEach(ex => {
+      const all = registry.filter(e => e.ex === ex.id).every(e => e.checked);
+      nav.querySelector(`[data-ex="${ex.id}"]`).classList.toggle("done", all);
+    });
+  }
+  document.getElementById("reset").addEventListener("click", () => {
+    if (!confirm("Effacer toutes tes réponses ?")) return;
+    registry.forEach(e => e.reset(false)); state = {}; save(); updateScore(); window.scrollTo(0, 0);
+  });
+  updateScore();
+})();
+</script>
+</body>
+</html>
