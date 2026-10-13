@@ -166,7 +166,7 @@
 
       const fields = item.b.map((_, n) => div.querySelector(`[id="${key}-${n}"]`));
       const fb = div.querySelector(".fb"), btn = div.querySelector(".check"), retry = div.querySelector(".retry");
-      const entry = { ex: ex.id, key, n: item.b.length, good: 0, checked: false };
+      const entry = { ex: ex.id, key, n: item.b.length, good: 0, checked: false, div, fields };
       registry.push(entry);
 
       function check(store = true) {
@@ -188,6 +188,17 @@
         entry.good = good; entry.checked = true;
         if (store) { state[key] = fields.map(f => f.value); save(); }
         updateScore();
+        return good === item.b.length;
+      }
+      // Tout est juste → on passe tout seul à la prochaine question pas encore faite
+      function submit() {
+        if (!check()) return;
+        const next = registry.slice(registry.indexOf(entry) + 1).find(e => !e.checked);
+        if (!next) return;
+        setTimeout(() => {
+          next.div.scrollIntoView({ behavior: "smooth", block: "center" });
+          next.fields[0].focus({ preventScroll: true });
+        }, 500);
       }
       function reset(store = true) {
         fields.forEach(f => { f.value = ""; f.disabled = false; f.classList.remove("ok", "ko"); });
@@ -196,13 +207,13 @@
         if (store) { delete state[key]; save(); updateScore(); }
       }
       entry.reset = reset;
-      btn.addEventListener("click", () => check());
+      btn.addEventListener("click", submit);
       retry.addEventListener("click", () => { reset(); fields[0].focus(); });
       fields.forEach((f, n) => f.addEventListener("keydown", e => {
         if (e.key !== "Enter") return;
         e.preventDefault();
         if (n < fields.length - 1 && !fields[n + 1].value) fields[n + 1].focus();
-        else { check(); const next = registry[registry.indexOf(entry) + 1]; if (next) { const nf = document.getElementById(next.key + "-0"); nf && nf.focus({ preventScroll: false }); } }
+        else submit();
       }));
 
       if (Array.isArray(state[key])) { state[key].forEach((v, n) => { if (fields[n]) fields[n].value = v; }); check(false); }
