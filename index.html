@@ -140,7 +140,7 @@
         const opts = b.o.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("");
         return `<span class="blank"><select id="${id}" aria-label="Réponse ${+n + 1}"><option value="">— choisir —</option>${opts}</select></span>`;
       }
-      const w = Math.max(9, Math.min(26, (b.a[0].length + 3)));
+      const w = mode === "word" ? 8 : 17;
       return `<span class="blank"><input id="${id}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:${w}ch" aria-label="Réponse ${+n + 1}">` +
         (b.h ? `<span class="h">(${esc(b.h)})</span>` : "") + `</span>`;
     });
@@ -164,7 +164,7 @@
         <div class="fb"></div>`;
       sec.appendChild(div);
 
-      const fields = item.b.map((_, n) => div.querySelector(`#${CSS.escape(key + "-" + n)}`));
+      const fields = item.b.map((_, n) => div.querySelector(`[id="${key}-${n}"]`));
       const fb = div.querySelector(".fb"), btn = div.querySelector(".check"), retry = div.querySelector(".retry");
       const entry = { ex: ex.id, key, n: item.b.length, good: 0, checked: false };
       registry.push(entry);
@@ -245,7 +245,8 @@
     document.getElementById("score").innerHTML = `${good} / ${done} <small>· ${done}/${total} faits</small>`;
     EXERCISES.forEach(ex => {
       const all = registry.filter(e => e.ex === ex.id).every(e => e.checked);
-      nav.querySelector(`[data-ex="${ex.id}"]`).classList.toggle("done", all);
+      const a = nav.querySelector(`[data-ex="${ex.id}"]`);
+      if (a) a.classList.toggle("done", all);
     });
   }
   document.getElementById("reset").addEventListener("click", () => {
