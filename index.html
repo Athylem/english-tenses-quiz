@@ -133,14 +133,14 @@
   const registry = [];
 
   function lineHTML(line, item, key, mode) {
-    let html = esc(line.trim()).replace(/^(A|B):/, '<span class="tag">$1:</span>');
+    let html = esc(line.trim()).replace(/^([A-Z][a-z]*):/, '<span class="tag">$1:</span>').replace(/~~(.+?)~~/g, "<s>$1</s>");
     return html.replace(/\[\[(\d+)\]\]/g, (_, n) => {
       const b = item.b[+n], id = `${key}-${n}`;
       if (mode === "choice") {
         const opts = b.o.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("");
         return `<span class="blank"><select id="${id}" aria-label="Réponse ${+n + 1}"><option value="">— choisir —</option>${opts}</select></span>`;
       }
-      const w = mode === "word" ? 8 : 17;
+      const w = mode === "word" ? 8 : mode === "sentence" ? 48 : 17;
       return `<span class="blank"><input id="${id}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:${w}ch" aria-label="Réponse ${+n + 1}">` +
         (b.h ? `<span class="h">(${esc(b.h)})</span>` : "") + `</span>`;
     });
